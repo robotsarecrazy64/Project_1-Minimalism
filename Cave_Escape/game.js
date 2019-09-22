@@ -27,12 +27,9 @@ function init() {
 	cave.anchor.y = 0;
 	cave.position.x = 0;
 	cave.position.y = 0;
-
 	back.scale.x = end_of_map/100;
 	back.scale.y = back.scale.x/3;
-
 	back.addChild(cave);
-	
 	stage.addChild(back);
 
 	var start_tile = new PIXI.extras.TilingSprite(ground, tile_size, tile_size);
