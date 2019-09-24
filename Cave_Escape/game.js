@@ -6,23 +6,33 @@ gameport.appendChild(renderer.view);
 // Containers
 var stage = new PIXI.Container();
 var back = new PIXI.Container();
+var skull_a = new PIXI.Container();
+var skull_b = new PIXI.Container();
+var skull_c = new PIXI.Container();
 
 // Assets
 var cave = new PIXI.Sprite.fromImage("cave_background.png");
 var ground = new PIXI.Texture.fromImage("ground.png");
 var lava = new PIXI.Texture.fromImage("lava.png");
 var player = new PIXI.Sprite.fromImage("Player.png");
-var enemy = new PIXI.Sprite.fromImage("big_flaming_skull.png");
+var goal = new PIXI.Sprite.fromImage("door.png");
+var big_skull_a = new PIXI.Sprite.fromImage("big_flaming_skull.png");
+var big_skull_b = new PIXI.Sprite.fromImage("big_flaming_skull.png");
+var big_skull_c = new PIXI.Sprite.fromImage("big_flaming_skull.png");
 
 // Variables to improve readability
 var ground_level = 423;
 var end_of_map = 1500;
 var floor_position = 470;
 var tile_size = 50;
-var winner = false;
+var count = 2;
 var offset = 0;
+var winner = false;
+
 
 function init() {
+	offset = 0;
+
 	cave.anchor.x = 0;
 	cave.anchor.y = 0;
 	cave.position.x = 0;
@@ -32,30 +42,70 @@ function init() {
 	back.addChild(cave);
 	stage.addChild(back);
 
+	// Generate Floor Tiles
 	var start_tile = new PIXI.extras.TilingSprite(ground, tile_size, tile_size);
 	start_tile.position.x = 0;
 	start_tile.position.y = floor_position;
 	start_tile.tilePosition.x = 0;
 	start_tile.tilePosition.y = 0;
 	stage.addChild(start_tile);
+	var end_tile = new PIXI.extras.TilingSprite(ground, tile_size, tile_size);
+	end_tile.position.x = end_of_map - tile_size;
+	end_tile.position.y = floor_position;
+	stage.addChild(end_tile);
+
 	generateGroundTiles();
 
+	// end goal
+	goal.position.x = end_of_map - tile_size;
+	goal.position.y = ground_level;
+	stage.addChild(goal);
+
+
+	// Set up Player
 	player.position.x = 0;
 	player.position.y = ground_level;
 	player.interactive = true;
 	document.addEventListener('keydown', keydownEventHandler);
 	stage.addChild(player);
 	
-	enemy.position.x = end_of_map - tile_size;
-	enemy.position.y = ground_level - 10;
-	stage.addChild(enemy);
+	// Set up enemies
+	big_skull_a.anchor.x = 0.5;
+	big_skull_a.anchor.y = 0.5;
+	big_skull_a.interactive = true;
+	skull_a.position.x = end_of_map/4;
+	skull_a.position.y = ground_level - tile_size;
+	skull_a.pivot.x = 50;
+	skull_a.pivot.y = 50;
+	skull_a.addChild(big_skull_a);
+	stage.addChild(skull_a);
+
+	big_skull_b.anchor.x = 0.5;
+	big_skull_b.anchor.y = 0.5;
+	big_skull_b.interactive = true;
+	skull_b.position.x = end_of_map/2;
+	skull_b.position.y = ground_level - tile_size;
+	skull_b.pivot.x = 50;
+	skull_b.pivot.y = 50;
+	skull_b.addChild(big_skull_b);
+	stage.addChild(skull_b);
+
+	big_skull_c.anchor.x = 0.5;
+	big_skull_c.anchor.y = 0.5;
+	big_skull_c.interactive = true;
+	skull_c.position.x = end_of_map - 250;
+	skull_c.position.y = ground_level - tile_size;
+	skull_c.pivot.x = 50;
+	skull_c.pivot.y = 50;
+	skull_c.addChild(big_skull_c);
+	stage.addChild(skull_c);
 
 	requestAnimationFrame(update);
 }
 
 function generateGroundTiles() {
 	offset += tile_size;
-	if (offset < end_of_map) {
+	if (offset < (end_of_map - tile_size)) {
 		addTile(offset);
 		addEnemy();
 		generateGroundTiles();
@@ -63,8 +113,19 @@ function generateGroundTiles() {
 }
 
 function update() {
+	// Updates the player status
 	if (player.position.y < ground_level) { movePlayer(player.position.x + (tile_size/2), ground_level); }
-	if(!winner) { checkWinCondition(player, enemy); }
+	if (!winner) { checkWinCondition(); }
+	if ( (player.position.x > (end_of_map - tile_size)) && winner ) { player.position.x = 0; }
+	
+	// Rotates the enemies
+	big_skull_a.rotation -= 0.0025;
+	skull_a.rotation += 0.0025;
+	big_skull_b.rotation -= 0.0025;
+	skull_b.rotation += 0.0025;
+	big_skull_c.rotation -= 0.0025;
+	skull_c.rotation += 0.0025;
+
 	renderer.render(stage);
 	requestAnimationFrame(update);
 }
@@ -96,11 +157,13 @@ function keydownEventHandler(event) {
   	if (event.keyCode == 68) { // D key
 		sleep(1);
 		movePlayer(player.position.x + (tile_size/2), player.position.y - tile_size);	
+		update();
   	}
 
   	if (event.keyCode == 65) { // A key
 		sleep(1);
    		movePlayer(player.position.x - ((3*tile_size)/2), player.position.y - tile_size);
+		update();
   	}
 }
 
@@ -124,11 +187,16 @@ function addEnemy() {
 	stage.addChild(skull);
 }
 
-function checkWinCondition (sprite_one, sprite_two) {
-	var x1 = sprite_one.x;
-	var x2 = sprite_two.x;
-	if( x1 >= x2) {
-		winner = true;
-		alert("Winner!");
+function checkWinCondition () {
+	if( player.x >= goal.x ) {
+		if(( count % 2 ) == 0) {
+			winner = true;
+			alert("You have successfully escaped the cave! Click OK to keep playing (forever).");
+		}
+		else {
+			winner == false;
+		}
+		init();	
+		count += 1;
 	}
 }
