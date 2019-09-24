@@ -146,9 +146,9 @@ function update() {
 function addTile( x ) {
 	var ground_tile = new PIXI.extras.TilingSprite( ground, tile_size, tile_size );
 	var lava_tile = new PIXI.extras.TilingSprite( lava, tile_size, tile_size );
-	var rand_num = getRand( 3 ); // get a random number (1 or 2)
+	var rand_num = getRand( 2 ); // get a random number (1 or 2)
 	
-	if ( rand_num != 1 ) { // adds a ground tile
+	if ( rand_num == 1 ) { // adds a ground tile
 		ground_tile.position.x = x;
 		ground_tile.position.y = floor_position;
 		stage.addChild( ground_tile );
