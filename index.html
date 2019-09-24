@@ -9,7 +9,18 @@
     <h1>Instructions</h1>
     <p>Tap (D) slowly to jump forward and Tap (A) to jump backwards. Avoid the lava and flaming skulls if you can. 
 	Try to make it all the way to the end to escape the cave.</p>
-
+	
+	<div id = "discus_thread"></div>
+	
+	<script>
+	(function() {
+		var d = document, s = d.createElement('script');
+		s.src = 'https://nau-cs413.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+	</script>
+	
     <script src="./PIXI/pixi.js"></script>
     <script src="game.js"></script>
     <script src="tweenjs.min.js"></script>
