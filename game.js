@@ -77,8 +77,8 @@ function init() {
 	big_skull_a.interactive = true;
 	skull_a.position.x = end_of_map/4;
 	skull_a.position.y = ground_level - tile_size;
-	skull_a.pivot.x = tile_size;
-	skull_a.pivot.y = tile_size;
+	skull_a.pivot.x = 50;
+	skull_a.pivot.y = 50;
 	skull_a.addChild( big_skull_a );
 	stage.addChild( skull_a );
 
@@ -87,8 +87,8 @@ function init() {
 	big_skull_b.interactive = true;
 	skull_b.position.x = end_of_map/2;
 	skull_b.position.y = ground_level - tile_size;
-	skull_b.pivot.x = tile_size;
-	skull_b.pivot.y = tile_size;
+	skull_b.pivot.x = 50;
+	skull_b.pivot.y = 50;
 	skull_b.addChild( big_skull_b );
 	stage.addChild( skull_b );
 
@@ -97,8 +97,8 @@ function init() {
 	big_skull_c.interactive = true;
 	skull_c.position.x = end_of_map - 250;
 	skull_c.position.y = ground_level - tile_size;
-	skull_c.pivot.x = tile_size;
-	skull_c.pivot.y = tile_size;
+	skull_c.pivot.x = 50;
+	skull_c.pivot.y = 50;
 	skull_c.addChild( big_skull_c );
 	stage.addChild( skull_c );
 	
@@ -146,9 +146,9 @@ function update() {
 function addTile( x ) {
 	var ground_tile = new PIXI.extras.TilingSprite( ground, tile_size, tile_size );
 	var lava_tile = new PIXI.extras.TilingSprite( lava, tile_size, tile_size );
-	var rand_num = getRand( 2 ); // get a random number (1 or 2)
+	var rand_num = getRand( 3 ); // get a random number (1 or 2)
 	
-	if ( rand_num == 1 ) { // adds a ground tile
+	if ( rand_num != 1 ) { // adds a ground tile
 		ground_tile.position.x = x;
 		ground_tile.position.y = floor_position;
 		stage.addChild( ground_tile );
@@ -191,7 +191,7 @@ function keydownEventHandler(event) {
 function sleep( seconds ) 
 {
   	var wait = new Date().getTime() + ( seconds * 1000 );
- 	while ( new Date().getTime() <= wait ) {} // wait for n seconds
+ 	while ( new Date().getTime() <= wait ) {}
 }
 
 /**
@@ -202,7 +202,7 @@ function movePlayer( new_x, new_y ) {
 }
 
 /**
-	Helper function that adds enemies to the stage at random locations
+	Helper function that adds enemies to the stage
 */
 function addEnemy() {
 	var skull = new PIXI.Sprite.fromImage( "flaming_skull.png" );
